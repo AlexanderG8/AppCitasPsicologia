@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace AppCitasPsicologia.Models
+namespace AppCitasPsicologia.Models.Roles
 {
     public class Roles
     {

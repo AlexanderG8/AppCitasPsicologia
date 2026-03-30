@@ -1,4 +1,5 @@
-﻿using AppCitasPsicologia.Models;
+﻿using AppCitasPsicologia.Models.Paginacion;
+using AppCitasPsicologia.Models.Roles;
 using Dapper;
 using Microsoft.Data.SqlClient;
 
@@ -8,7 +9,8 @@ namespace AppCitasPsicologia.Repositorys
     {
         Task Actualizar(Roles rol);
         Task Borrar(int id);
-        Task<IEnumerable<Roles>> Buscar();
+        Task<IEnumerable<Roles>> Buscar(PaginacionViewModel paginacion);
+        Task<int> Contar();
         Task<Roles> BuscarPorId(int id);
         Task<Roles> Crear(Roles rol);
         Task<bool> ExisteCodigoRol(string codigoRol);
@@ -22,10 +24,22 @@ namespace AppCitasPsicologia.Repositorys
             this.connectionString = configuration.GetConnectionString("DefaultConnection");
         }
 
-        public async Task<IEnumerable<Roles>> Buscar()
+        public async Task<IEnumerable<Roles>> Buscar(PaginacionViewModel paginacion)
         {
             using var connection = new SqlConnection(connectionString);
-            return await connection.QueryAsync<Roles>(@"SELECT * FROM Roles");
+            return await connection.QueryAsync<Roles>(@$"SELECT * FROM Roles
+                                                       ORDER BY NombreRol
+                                                       OFFSET {paginacion.RecordsASaltar}
+                                                       ROWS FETCH NEXT {paginacion.RecordsPorPagina}
+                                                       ROWS ONLY");
+        }
+
+        public async Task<int> Contar()
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.ExecuteScalarAsync<int>(
+                @"SELECT COUNT(*) 
+                  FROM Roles");
         }
 
         public async Task<Roles> BuscarPorId(int id)

@@ -1,0 +1,67 @@
+﻿@using AppCitasPsicologia.Models.Paginacion
+@using AppCitasPsicologia.Models.Roles
+@model PaginacionRespuesta<Roles>
+@{
+	ViewData["Title"] = "Roles";
+}
+<div class="card">
+	<div class="card-body">
+		<h1 class="card-title">@ViewData["Title"]</h1>
+		<a asp-action="Crear" class="btn btn-primary mb-3">Crear Nuevo</a>
+	</div>
+</div>
+<br />
+<div class="card">
+	<div class="card-body">
+		<!--Select que permite selecionar la cantidad de registros a ver por pagina-->
+		<div class="row">
+			<label>Cantidad de registros a mostrar:</label>
+			<div class="mb-3 col-auto">
+				<select asp-for="@Model.RecordsPorPagina" id="cantidadRecordsPorPagina" class="form-select">
+					<option>3</option>
+					<option>5</option>
+					<option>10</option>
+				</select>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr class="table-secondary">
+					<th>Id</th>
+					<th>Código</th>
+					<th>Rol</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var rol in Model.Elementos)
+				{
+					<tr>
+						<td>@rol.Id</td>
+						<td>@rol.CodigoRol</td>
+						<td>@rol.NombreRol</td>
+						<td>
+							<a asp-action="Editar" asp-route-id="@rol.Id" class="btn btn-primary">Editar</a>
+							<a asp-action="Borrar" asp-route-id="@rol.Id" class="btn btn-danger">Borrar</a>
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<!--Paginación-->
+		<partial name="_Paginacion" />
+	</div>
+</div>
+
+
+
+
+
+@section Scripts {
+	<script>
+		$("#cantidadRecordsPorPagina").change(function(){
+			const recordsPorPagina = $(this).val();
+			location.href = `/Roles/?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+		});
+	</script>
+}

@@ -1,4 +1,5 @@
-﻿using AppCitasPsicologia.Models;
+﻿using AppCitasPsicologia.Models.Paginacion;
+using AppCitasPsicologia.Models.Roles;
 using AppCitasPsicologia.Repositorys;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -12,10 +13,19 @@ namespace AppCitasPsicologia.Controllers
         {
             this.repositorioRoles = repositorioRoles;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PaginacionViewModel paginacion)
         {
-            var roles = await repositorioRoles.Buscar();
-            return View(roles);
+            var roles = await repositorioRoles.Buscar(paginacion);
+            var totalRoles = await repositorioRoles.Contar();
+            var respuestaVM = new PaginacionRespuesta<Roles>()
+            {
+                Elementos = roles,
+                Pagina = paginacion.Pagina,
+                RecordsPorPagina = paginacion.RecordsPorPagina,
+                CantidadTotalRecords = totalRoles,
+                BaseURL = Url.Action()
+            };
+            return View(respuestaVM);
         }
 
         public IActionResult Crear()
