@@ -15,4 +15,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <Target Name="BuildTailwindCSS" BeforeTargets="Build">
+    <Exec Command="npm run build:css" />
+  </Target>
+
 </Project>

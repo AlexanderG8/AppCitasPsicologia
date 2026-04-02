@@ -417,3 +417,7 @@ FodyWeavers.xsd
 *.msm
 *.msp
 /appsettings.json
+
+# Tailwind / Node
+node_modules/
+wwwroot/css/site.css
