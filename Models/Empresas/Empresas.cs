@@ -1,22 +1,26 @@
 ﻿using AppCitasPsicologia.Models.Validations;
-using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace AppCitasPsicologia.Models.Roles
+namespace AppCitasPsicologia.Models.Empresas
 {
-    public class Roles
+    public class Empresas
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [StringLength(maximumLength:120)]
-        [PrimeraLetraMayuscula]
-        [Remote(action: "VerificarExisteCodigoRol", controller: "Roles")]
-        public string CodigoRol { get; set; }
+        [StringLength(maximumLength: 11)]
+        public string Ruc { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]
         [PrimeraLetraMayuscula]
-        [Remote(action: "VerificarExisteNombreRol", controller:"Roles")]
-        public string NombreRol { get; set; }
+        public string NombreEmpresa { get; set; }
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [StringLength(maximumLength: 120)]
+        [PrimeraLetraMayuscula]
+        public string Encargado { get; set; }
+        [Required(ErrorMessage = "El campo {0} es requerido")]
+        [StringLength(maximumLength: 500)]
+        [PrimeraLetraMayuscula]
+        public string Direccion { get; set; }
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaActualizacion { get; set; }
         public DateTime? FechaEliminado { get; set; }
