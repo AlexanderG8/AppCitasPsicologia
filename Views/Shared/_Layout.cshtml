@@ -151,6 +151,30 @@
     <div id="sidebarBackdrop"
          class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
 
+    @if (TempData["Toast"] != null)
+    {
+        <div id="toast"
+             class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-4 py-3
+                    bg-emerald-500/80 backdrop-blur-sm text-white text-sm font-medium rounded-xl shadow-lg
+                    opacity-100 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>@TempData["Toast"]</span>
+        </div>
+        <script>
+            setTimeout(function () {
+                const toast = document.getElementById('toast');
+                if (toast) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-50%) translateY(-1rem)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 3000);
+        </script>
+    }
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

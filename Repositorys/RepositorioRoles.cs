@@ -13,8 +13,8 @@ namespace AppCitasPsicologia.Repositorys
         Task<int> Contar();
         Task<Roles> BuscarPorId(int id);
         Task<Roles> Crear(Roles rol);
-        Task<bool> ExisteCodigoRol(string codigoRol);
-        Task<bool> ExisteNombreRol(string nombreRol);
+        Task<bool> ExisteCodigoRol(string codigoRol, int id);
+        Task<bool> ExisteNombreRol(string nombreRol, int id);
     }
     public class RepositorioRoles : IRepositorioRoles
     {
@@ -51,7 +51,7 @@ namespace AppCitasPsicologia.Repositorys
         public async Task<Roles> Crear(Roles rol)
         {
             using var connection = new SqlConnection(connectionString);
-            var id = await connection.QuerySingleAsync<int>(@"INSERT INTO Roles (CodigoRol, NombreRol) VALUES (@CodigoRol, @NombreRol); SELECT SCOPE_IDENTITY();", rol);
+            var id = await connection.QuerySingleAsync<int>(@"INSERT INTO Roles (CodigoRol, NombreRol, FechaCreacion) VALUES (@CodigoRol, @NombreRol, @FechaCreacion); SELECT SCOPE_IDENTITY();", rol);
             rol.Id = id;
             return rol;
         }
@@ -59,7 +59,7 @@ namespace AppCitasPsicologia.Repositorys
         public async Task Actualizar(Roles rol)
         {
             using var connection = new SqlConnection(connectionString);
-            await connection.ExecuteAsync(@"UPDATE Roles SET CodigoRol = @CodigoRol, NombreRol = @NombreRol WHERE Id = @Id", rol);
+            await connection.ExecuteAsync(@"UPDATE Roles SET CodigoRol = @CodigoRol, NombreRol = @NombreRol, FechaActualizacion = @FechaActualizacion WHERE Id = @Id", rol);
         }
 
         public async Task Borrar(int id)
@@ -68,17 +68,17 @@ namespace AppCitasPsicologia.Repositorys
             await connection.ExecuteAsync(@"DELETE FROM Roles WHERE Id = @Id", new { id });
         }
 
-        public async Task<bool> ExisteCodigoRol(string codigoRol)
+        public async Task<bool> ExisteCodigoRol(string codigoRol, int id)
         {
             using var connection = new SqlConnection(connectionString);
-            var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Roles WHERE CodigoRol = @CodigoRol", new { codigoRol });
+            var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Roles WHERE CodigoRol = @CodigoRol AND Id <> @Id", new { codigoRol, id });
             return existe == 1;
         }
 
-        public async Task<bool> ExisteNombreRol(string nombreRol)
+        public async Task<bool> ExisteNombreRol(string nombreRol, int id)
         {
             using var connection = new SqlConnection(connectionString);
-            var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Roles WHERE NombreRol = @NombreRol", new { nombreRol });
+            var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Roles WHERE NombreRol = @NombreRol AND Id <> @Id", new { nombreRol, id });
             return existe == 1;
         }
     }

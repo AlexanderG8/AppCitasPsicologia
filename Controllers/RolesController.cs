@@ -39,17 +39,22 @@ namespace AppCitasPsicologia.Controllers
             {
                 return View(rol);
             }
-            var yaExisteCodigoRol = await repositorioRoles.ExisteCodigoRol(rol.CodigoRol);
+
+            #region Validaciones
+            var yaExisteCodigoRol = await repositorioRoles.ExisteCodigoRol(rol.CodigoRol, rol.Id);
             if (yaExisteCodigoRol)
             {
                 ModelState.AddModelError(nameof(rol.CodigoRol), $"El código de rol {rol.CodigoRol} ya existe.");
             }
-            var yaExisteNombreRol = await repositorioRoles.ExisteNombreRol(rol.NombreRol);
+            var yaExisteNombreRol = await repositorioRoles.ExisteNombreRol(rol.NombreRol, rol.Id);
             if (yaExisteNombreRol)
             {
                 ModelState.AddModelError(nameof(rol.CodigoRol), $"El nombre de rol {rol.CodigoRol} ya existe.");
             }
+            #endregion
+
             await repositorioRoles.Crear(rol);
+            TempData["Toast"] = "Rol creado correctamente";
             return RedirectToAction("Index");
         }
 
@@ -75,20 +80,26 @@ namespace AppCitasPsicologia.Controllers
             {
                 return RedirectToAction("NoEncontrado", "Home");
             }
+
+            #region Validaciones
+            var yaExisteCodigoRol = await repositorioRoles.ExisteCodigoRol(rol.CodigoRol, rol.Id);
+            if (yaExisteCodigoRol)
+            {
+                ModelState.AddModelError(nameof(rol.CodigoRol), $"El código de rol {rol.CodigoRol} ya existe.");
+            }
+            var yaExisteNombreRol = await repositorioRoles.ExisteNombreRol(rol.NombreRol, rol.Id);
+            if (yaExisteNombreRol)
+            {
+                ModelState.AddModelError(nameof(rol.CodigoRol), $"El nombre de rol {rol.CodigoRol} ya existe.");
+            }
+            #endregion
+
+            rol.FechaActualizacion = DateTime.Now;
             await repositorioRoles.Actualizar(rol);
+            TempData["Toast"] = "Rol actualizado correctamente";
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Borrar(int id)
-        {
-            var rol = await repositorioRoles.BuscarPorId(id);
-            if (rol is null)
-            {
-                return RedirectToAction("NoEncontrado", "Home");
-            }
-            return View(rol);
-        }
         [HttpPost]
         public async Task<IActionResult> BorrarRol(int id)
         {
@@ -97,14 +108,15 @@ namespace AppCitasPsicologia.Controllers
             {
                 return RedirectToAction("NoEncontrado", "Home");
             }
+            TempData["Toast"] = "Rol eliminado correctamente";
             await repositorioRoles.Borrar(id);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerificarExisteCodigoRol(string codigoRol) 
+        public async Task<IActionResult> VerificarExisteCodigoRol(string codigoRol, int id) 
         {
-            var yaExisteCodigoRol = await repositorioRoles.ExisteCodigoRol(codigoRol);
+            var yaExisteCodigoRol = await repositorioRoles.ExisteCodigoRol(codigoRol, id);
             if (yaExisteCodigoRol)
             {
                 return Json($"El código de rol {codigoRol} ya existe.");
@@ -113,9 +125,9 @@ namespace AppCitasPsicologia.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerificarExisteNombreRol(string nombreRol)
+        public async Task<IActionResult> VerificarExisteNombreRol(string nombreRol, int id)
         {
-            var yaExisteNombreRol = await repositorioRoles.ExisteNombreRol(nombreRol);
+            var yaExisteNombreRol = await repositorioRoles.ExisteNombreRol(nombreRol, id);
             if (yaExisteNombreRol)
             {
                 return Json($"El código de rol {nombreRol} ya existe.");
