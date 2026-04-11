@@ -22,5 +22,7 @@ namespace AppCitasPsicologia.Models.Empresas
         public DateTime? FechaEliminado { get; set; }
         [NotMapped]
         public IFileHttpResult DocPagoFile { get; set; }
+        [NotMapped]
+        public string NombreSuscripcion { get; set; }
     }
 }

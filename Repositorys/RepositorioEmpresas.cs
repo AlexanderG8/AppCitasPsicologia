@@ -15,8 +15,13 @@ namespace AppCitasPsicologia.Repositorys
         Task Borrar(int id);
         Task<bool> ExisteRuc(string ruc, int id);
         Task<bool> ExisteNombreEmpresa(string nombreEmpresa, int id);
-        Task<DetalleSuscripciones> GuardarDetalleSuscripcionEmpresa(DetalleSuscripciones detalle);
-        Task<DetalleSuscripciones> BuscarDetalleSuscripcionEmpresa(int empresaId);
+        // Detalle suscripciones
+        Task<IEnumerable<DetalleSuscripciones>> BuscarDetallesSuscripcionEmpresa(int empresaId, PaginacionViewModel paginacion);
+        Task<int> ContarDetallesSuscripcionEmpresa(int empresaId);
+        Task<DetalleSuscripciones> BuscarDetalleSuscripcionPorId(int id);
+        Task<DetalleSuscripciones> CrearDetalleSuscripcionEmpresa(DetalleSuscripciones detalle);
+        Task ActualizarDetalleSuscripcionEmpresa(DetalleSuscripciones detalle);
+        Task BorrarDetalleSuscripcionEmpresa(int id);
     }
 
     public class RepositorioEmpresas : IRepositorioEmpresas
@@ -32,6 +37,7 @@ namespace AppCitasPsicologia.Repositorys
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryAsync<Empresas>(@$"SELECT * FROM EMPRESAS
+                                                            WHERE FechaEliminado IS NULL
                                                             ORDER BY NombreEmpresa
                                                             OFFSET {paginacion.RecordsASaltar}
                                                             ROWS FETCH NEXT {paginacion.RecordsPorPagina}
@@ -41,7 +47,7 @@ namespace AppCitasPsicologia.Repositorys
         public async Task<int> Contar()
         {
             using var connection = new SqlConnection(connectionString);
-            return await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM EMPRESAS");
+            return await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM EMPRESAS WHERE FechaEliminado IS NULL");
         }
 
         public async Task<Empresas> BuscarPorId(int id)
@@ -75,7 +81,7 @@ namespace AppCitasPsicologia.Repositorys
         public async Task Borrar(int id)
         {
             using var connection = new SqlConnection(connectionString);
-            await connection.ExecuteAsync("DELETE FROM EMPRESAS WHERE Id = @Id", new { id });
+            await connection.ExecuteAsync("UPDATE EMPRESAS SET FechaEliminado = @FechaEliminado WHERE Id = @Id", new { id, FechaEliminado = DateTime.UtcNow });
         }
 
         public async Task<bool> ExisteRuc(string ruc, int id)
@@ -95,7 +101,42 @@ namespace AppCitasPsicologia.Repositorys
             return existe == 1;
         }
 
-        public async Task<DetalleSuscripciones> GuardarDetalleSuscripcionEmpresa(DetalleSuscripciones detalle) 
+        public async Task<IEnumerable<DetalleSuscripciones>> BuscarDetallesSuscripcionEmpresa(int empresaId, PaginacionViewModel paginacion)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<DetalleSuscripciones>(
+                @$"SELECT ds.Id, ds.EmpresaId, ds.SuscripcionId, ds.FechaInicio, ds.FechaFin,
+                         ds.DocPago, ds.FechaCreacion, ds.FechaActualizacion, ds.FechaEliminado,
+                         s.NombreSuscripcion
+                  FROM DetalleSuscripciones ds
+                  INNER JOIN SUSCRIPCIONES s ON ds.SuscripcionId = s.Id
+                  WHERE ds.EmpresaId = @EmpresaId AND ds.FechaEliminado IS NULL
+                  ORDER BY ds.FechaInicio DESC
+                  OFFSET {paginacion.RecordsASaltar} ROWS FETCH NEXT {paginacion.RecordsPorPagina} ROWS ONLY",
+                new { empresaId });
+        }
+
+        public async Task<int> ContarDetallesSuscripcionEmpresa(int empresaId)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.ExecuteScalarAsync<int>(
+                "SELECT COUNT(*) FROM DetalleSuscripciones WHERE EmpresaId = @EmpresaId AND FechaEliminado IS NULL",
+                new { empresaId });
+        }
+
+        public async Task<DetalleSuscripciones> BuscarDetalleSuscripcionPorId(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryFirstOrDefaultAsync<DetalleSuscripciones>(
+                @"SELECT ds.Id, ds.EmpresaId, ds.SuscripcionId, ds.FechaInicio, ds.FechaFin,
+                         ds.DocPago, ds.FechaCreacion, ds.FechaActualizacion, ds.FechaEliminado,
+                         s.NombreSuscripcion
+                  FROM DetalleSuscripciones ds
+                  INNER JOIN SUSCRIPCIONES s ON ds.SuscripcionId = s.Id
+                  WHERE ds.Id = @Id AND ds.FechaEliminado IS NULL", new { id });
+        }
+
+        public async Task<DetalleSuscripciones> CrearDetalleSuscripcionEmpresa(DetalleSuscripciones detalle)
         {
             using var connection = new SqlConnection(connectionString);
             var id = await connection.QuerySingleAsync<int>(
@@ -106,11 +147,22 @@ namespace AppCitasPsicologia.Repositorys
             return detalle;
         }
 
-        public async Task<DetalleSuscripciones> BuscarDetalleSuscripcionEmpresa(int empresaId)
+        public async Task ActualizarDetalleSuscripcionEmpresa(DetalleSuscripciones detalle)
         {
             using var connection = new SqlConnection(connectionString);
-            return await connection.QueryFirstOrDefaultAsync<DetalleSuscripciones>(
-                "SELECT * FROM DetalleSuscripciones WHERE EmpresaId = @EmpresaId AND FechaEliminado IS NULL", new { empresaId });
+            await connection.ExecuteAsync(
+                @"UPDATE DetalleSuscripciones
+                  SET SuscripcionId = @SuscripcionId, FechaInicio = @FechaInicio,
+                      FechaFin = @FechaFin, DocPago = @DocPago,
+                      FechaActualizacion = @FechaActualizacion
+                  WHERE Id = @Id", detalle);
+        }
+
+        public async Task BorrarDetalleSuscripcionEmpresa(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.ExecuteAsync(
+                "UPDATE DetalleSuscripciones SET FechaEliminado = @FechaEliminado WHERE Id = @Id", new { id, FechaEliminado = DateTime.UtcNow });
         }
     }
 }

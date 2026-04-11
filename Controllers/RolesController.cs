@@ -1,4 +1,5 @@
-﻿using AppCitasPsicologia.Models.Paginacion;
+﻿using AppCitasPsicologia.Models.Empresas;
+using AppCitasPsicologia.Models.Paginacion;
 using AppCitasPsicologia.Models.Roles;
 using AppCitasPsicologia.Repositorys;
 using Microsoft.AspNetCore.Mvc;
@@ -133,6 +134,37 @@ namespace AppCitasPsicologia.Controllers
                 return Json($"El código de rol {nombreRol} ya existe.");
             }
             return Json(true);
+        }
+
+        /*Opciones Roles*/
+
+        [HttpGet]
+        public async Task<IActionResult> OpcionesDeRol(int id)
+        {
+            var rol = await repositorioRoles.BuscarPorId(id);
+            if (rol is null)
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El rol no existe." });
+
+            var opcionesDeRol = await repositorioRoles.ObtenerOpcionesDeRol(id);
+            var respuestaVM = new OpcionesDeRolViewModel()
+            {
+                IdRol = id,
+                NombreRol = rol.NombreRol,
+                Opciones = opcionesDeRol
+            };
+            return View(respuestaVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GuardarOpcionesDeRol(int rolId, List<int> opcionesSeleccionadas)
+        {
+            var rol = await repositorioRoles.BuscarPorId(rolId);
+            if (rol is null)
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El rol no existe." });
+
+            await repositorioRoles.GuardarOpcionesDeRol(rolId, opcionesSeleccionadas ?? new List<int>());
+            TempData["Toast"] = "Accesos actualizados correctamente.";
+            return RedirectToAction("Index");
         }
     }
 }

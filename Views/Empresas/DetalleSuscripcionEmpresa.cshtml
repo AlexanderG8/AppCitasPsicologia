@@ -1,7 +1,9 @@
 @using AppCitasPsicologia.Models.Empresas
-@model DetalleSuscripciones
+@using AppCitasPsicologia.Models.Paginacion
+@model PaginacionRespuesta<DetalleSuscripciones>
 @{
-    ViewData["Title"] = "Suscripción de Empresa";
+    ViewData["Title"] = "Suscripciones de Empresa";
+    var empresaId = (int)ViewBag.EmpresaId;
     var nombreEmpresa = ViewBag.NombreEmpresa as string;
 }
 
@@ -11,150 +13,179 @@
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
     </svg>
-    <span class="text-slate-700 font-medium">Suscripción</span>
+    <span class="text-slate-700 font-medium">Suscripciones</span>
 </nav>
 
 <!-- Page header -->
-<div class="mb-6">
-    <h1 class="text-2xl font-bold text-slate-800">Suscripción de Empresa</h1>
-    <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Suscripciones</h1>
+        <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+    </div>
+    <a asp-action="CrearDetalleSuscripcionEmpresa" asp-route-empresaId="@empresaId"
+       class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm self-start sm:self-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Agregar Suscripcion
+    </a>
 </div>
 
 <!-- Card -->
-<div class="bg-white rounded-xl border border-slate-200 shadow-sm max-w-2xl">
-    <div class="px-6 py-5 border-b border-slate-100">
-        <h2 class="text-base font-semibold text-slate-700">Datos de Suscripción</h2>
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+            <label for="cantidadRecordsPorPagina" class="text-sm text-slate-500 whitespace-nowrap">Mostrar</label>
+            <select asp-for="@Model.RecordsPorPagina" id="cantidadRecordsPorPagina"
+                    class="text-sm border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer">
+                <option>3</option>
+                <option>5</option>
+                <option>10</option>
+            </select>
+            <span class="text-sm text-slate-500">registros</span>
+        </div>
+        <span class="text-xs text-slate-400">
+            @Model.CantidadTotalRecords registro@(Model.CantidadTotalRecords == 1 ? "" : "s")
+        </span>
     </div>
 
-    <form asp-action="DetalleSuscripcionEmpresa" method="post" enctype="multipart/form-data" class="px-6 py-5 space-y-5">
-        <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="EmpresaId" />
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider w-16">Id</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Suscripcion</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Fecha Inicio</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Fecha Fin</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Doc. Pago</th>
+                    <th class="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach (var detalle in Model.Elementos)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">@detalle.Id</td>
+                        <td class="px-5 py-3.5">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                @detalle.NombreSuscripcion
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 text-slate-600">@detalle.FechaInicio.ToString("dd/MM/yyyy")</td>
+                        <td class="px-5 py-3.5 text-slate-600">@detalle.FechaFin.ToString("dd/MM/yyyy")</td>
+                        <td class="px-5 py-3.5">
+                            @if (!string.IsNullOrEmpty(detalle.DocPago))
+                            {
+                                <a href="/uploads/pagos/@detalle.DocPago" target="_blank"
+                                   class="inline-flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                    </svg>
+                                    Ver archivo
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-slate-400 text-xs">Sin archivo</span>
+                            }
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center justify-end gap-2">
+                                <a asp-action="EditarDetalleSuscripcionEmpresa" asp-route-id="@detalle.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    Editar
+                                </a>
+                                <button type="button" onclick="abrirModalBorrar(@detalle.Id, '@detalle.NombreSuscripcion', @empresaId)"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Elementos.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="px-5 py-10 text-center text-slate-400 text-sm">
+                            No hay suscripciones registradas para esta empresa.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-        <!-- Suscripción -->
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">
-                Suscripción <span class="text-red-500">*</span>
-            </label>
-            <select asp-for="SuscripcionId" asp-items="ViewBag.Suscripciones" id="selectSuscripcion"
-                    class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-white text-slate-700
-                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-            </select>
-            <span asp-validation-for="SuscripcionId" class="text-xs text-red-500 mt-1 block"></span>
-        </div>
+    <!-- Pagination -->
+    <div class="px-5 py-4 border-t border-slate-100">
+        <partial name="_Paginacion" />
+    </div>
+</div>
 
-        <!-- Fecha Inicio -->
-        <div>
-            <label asp-for="FechaInicio" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Fecha de Inicio <span class="text-red-500">*</span>
-            </label>
-            <input asp-for="FechaInicio" type="date" id="inputFechaInicio" readonly
-                   class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-slate-50 text-slate-600
-                          focus:outline-none cursor-not-allowed" />
-            <span asp-validation-for="FechaInicio" class="text-xs text-red-500 mt-1 block"></span>
-        </div>
-
-        <!-- Fecha Fin -->
-        <div>
-            <label asp-for="FechaFin" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Fecha de Fin <span class="text-red-500">*</span>
-            </label>
-            <input asp-for="FechaFin" type="date" id="inputFechaFin" readonly
-                   class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-slate-50 text-slate-600
-                          focus:outline-none cursor-not-allowed" />
-            <span asp-validation-for="FechaFin" class="text-xs text-red-500 mt-1 block"></span>
-        </div>
-
-        <!-- Documento de Pago -->
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">
-                Documento de Pago <span class="text-red-500">*</span>
-            </label>
-            <div class="flex items-center gap-3">
-                <label for="docPagoFile"
-                       class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200
-                              hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                    </svg>
-                    Seleccionar archivo
-                </label>
-                <span id="nombreArchivo" class="text-sm text-slate-500 truncate max-w-xs">Sin archivo seleccionado</span>
-                <input type="hidden" asp-for="DocPago" id="docPago"/>
+<!-- Modal Borrar -->
+<div id="modalBorrar" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-sm mx-4 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
             </div>
-            <input type="file" id="docPagoFile" name="docPagoFile" class="hidden"
-                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
-            <span asp-validation-for="DocPago" class="text-xs text-red-500 mt-1 block"></span>
+            <div>
+                <h3 class="text-base font-semibold text-slate-800">Confirmar eliminacion</h3>
+                <p class="text-sm text-slate-500 mt-0.5">
+                    ¿Estas seguro de borrar <span id="modalNombreDetalle" class="font-medium text-slate-700"></span>?
+                </p>
+            </div>
         </div>
-
-        <!-- Buttons -->
-        <div class="flex items-center gap-3 pt-2 border-t border-slate-100">
-            <button type="submit"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-                Guardar
+        <div class="flex items-center justify-end gap-3 mt-6">
+            <button type="button" onclick="cerrarModalBorrar()"
+                    class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                Cancelar
             </button>
-            <a asp-controller="Empresas" asp-action="Index"
-               class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Regresar
-            </a>
+            <form id="formBorrar" asp-action="BorrarDetalleSuscripcionEmpresa" method="post">
+                <input type="hidden" id="inputIdBorrar" name="id" />
+                <input type="hidden" id="inputEmpresaIdBorrar" name="empresaId" />
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                    Borrar
+                </button>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        // Mostrar nombre del archivo seleccionado
-        document.getElementById('docPagoFile').addEventListener('change', function () {
-            const nombre = this.files.length > 0 ? this.files[0].name : 'Sin archivo seleccionado';
-            document.getElementById('nombreArchivo').textContent = nombre;
-            document.getElementById('docPago').value = nombre;
+        $("#cantidadRecordsPorPagina").change(function () {
+            const recordsPorPagina = $(this).val();
+            location.href = `/Empresas/DetalleSuscripcionEmpresa/@empresaId?pagina=1&recordsPorPagina=${recordsPorPagina}`;
         });
 
-        // Calcular fechas al seleccionar suscripción
-        $('#selectSuscripcion').on('change', function () {
-            const suscripcionId = parseInt($(this).val());
-            if (!suscripcionId || suscripcionId === 0) {
-                $('#inputFechaInicio').val('');
-                $('#inputFechaFin').val('');
-                return;
-            }
+        function abrirModalBorrar(id, nombre, empresaId) {
+            document.getElementById('inputIdBorrar').value = id;
+            document.getElementById('inputEmpresaIdBorrar').value = empresaId;
+            document.getElementById('modalNombreDetalle').textContent = '"' + nombre + '"';
+            document.getElementById('modalBorrar').classList.remove('hidden');
+            document.getElementById('modalBorrar').classList.add('flex');
+        }
 
-            $.get('/Suscripciones/ObtenerCantidadDeMeses/' + suscripcionId, function (cantMeses) {
-                if (typeof cantMeses !== 'number' || cantMeses <= 0) return;
+        function cerrarModalBorrar() {
+            document.getElementById('modalBorrar').classList.add('hidden');
+            document.getElementById('modalBorrar').classList.remove('flex');
+        }
 
-                const hoy = new Date();
-                const fechaFin = new Date(hoy);
-                fechaFin.setMonth(fechaFin.getMonth() + cantMeses);
-
-                $('#inputFechaInicio').val(formatDate(hoy));
-                $('#inputFechaFin').val(formatDate(fechaFin));
-            });
+        document.getElementById('modalBorrar').addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalBorrar();
         });
-
-        function formatDate(date) {
-            const y = date.getFullYear();
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const d = String(date.getDate()).padStart(2, '0');
-            return `${y}-${m}-${d}`;
-        }
-
-        // Si ya hay suscripción seleccionada (edición), disparar el cambio
-        const suscripcionInicial = parseInt($('#selectSuscripcion').val());
-        if (suscripcionInicial && suscripcionInicial !== 0) {
-            @if (Model.FechaInicio != default(DateTime))
-            {
-                <text>
-                // Fechas ya existen, no recalcular
-                $('#inputFechaInicio').val('@Model.FechaInicio.ToString("yyyy-MM-dd")');
-                $('#inputFechaFin').val('@Model.FechaFin.ToString("yyyy-MM-dd")');
-                </text>
-            }
-        }
     </script>
 }
