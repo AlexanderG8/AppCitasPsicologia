@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AppCitasPsicologia.Models.Validations;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppCitasPsicologia.Models.Empresas
 {
@@ -6,6 +8,8 @@ namespace AppCitasPsicologia.Models.Empresas
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
+        [PrimeraLetraMayuscula]
+        [Remote(action: "VerificarExisteNombreSuscripcion", controller: "Suscripciones", AdditionalFields = nameof(Id))]
         public string NombreSuscripcion { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public int CantMeses { get; set; }

@@ -1,4 +1,5 @@
 ﻿using AppCitasPsicologia.Models.Validations;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace AppCitasPsicologia.Models.Empresas
@@ -8,10 +9,12 @@ namespace AppCitasPsicologia.Models.Empresas
         public int Id { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 11)]
+        [Remote(action: "VerificarExisteRuc", controller: "Empresas", AdditionalFields = nameof(Id))]
         public string Ruc { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]
         [PrimeraLetraMayuscula]
+        [Remote(action: "VerificarExisteNombreEmpresa", controller: "Empresas", AdditionalFields = nameof(Id))]
         public string NombreEmpresa { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]

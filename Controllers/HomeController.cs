@@ -11,8 +11,9 @@ namespace AppCitasPsicologia.Controllers
             return View();
         }
 
-        public IActionResult NoEncontrado() 
+        public IActionResult NoEncontrado(string mensaje) 
         {
+            ViewBag.Mensaje = mensaje;
             return View();
         }
         public IActionResult Privacy()

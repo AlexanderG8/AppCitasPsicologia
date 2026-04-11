@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="wwwroot\uploads\pagos\" />
   </ItemGroup>
 
   <Target Name="BuildTailwindCSS" BeforeTargets="Build">

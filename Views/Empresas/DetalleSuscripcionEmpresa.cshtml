@@ -1,0 +1,160 @@
+@using AppCitasPsicologia.Models.Empresas
+@model DetalleSuscripciones
+@{
+    ViewData["Title"] = "Suscripción de Empresa";
+    var nombreEmpresa = ViewBag.NombreEmpresa as string;
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-controller="Empresas" asp-action="Index" class="hover:text-indigo-600 transition-colors">Empresas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Suscripción</span>
+</nav>
+
+<!-- Page header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Suscripción de Empresa</h1>
+    <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+</div>
+
+<!-- Card -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm max-w-2xl">
+    <div class="px-6 py-5 border-b border-slate-100">
+        <h2 class="text-base font-semibold text-slate-700">Datos de Suscripción</h2>
+    </div>
+
+    <form asp-action="DetalleSuscripcionEmpresa" method="post" enctype="multipart/form-data" class="px-6 py-5 space-y-5">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="EmpresaId" />
+
+        <!-- Suscripción -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                Suscripción <span class="text-red-500">*</span>
+            </label>
+            <select asp-for="SuscripcionId" asp-items="ViewBag.Suscripciones" id="selectSuscripcion"
+                    class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-white text-slate-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </select>
+            <span asp-validation-for="SuscripcionId" class="text-xs text-red-500 mt-1 block"></span>
+        </div>
+
+        <!-- Fecha Inicio -->
+        <div>
+            <label asp-for="FechaInicio" class="block text-sm font-medium text-slate-700 mb-1.5">
+                Fecha de Inicio <span class="text-red-500">*</span>
+            </label>
+            <input asp-for="FechaInicio" type="date" id="inputFechaInicio" readonly
+                   class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-slate-50 text-slate-600
+                          focus:outline-none cursor-not-allowed" />
+            <span asp-validation-for="FechaInicio" class="text-xs text-red-500 mt-1 block"></span>
+        </div>
+
+        <!-- Fecha Fin -->
+        <div>
+            <label asp-for="FechaFin" class="block text-sm font-medium text-slate-700 mb-1.5">
+                Fecha de Fin <span class="text-red-500">*</span>
+            </label>
+            <input asp-for="FechaFin" type="date" id="inputFechaFin" readonly
+                   class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 bg-slate-50 text-slate-600
+                          focus:outline-none cursor-not-allowed" />
+            <span asp-validation-for="FechaFin" class="text-xs text-red-500 mt-1 block"></span>
+        </div>
+
+        <!-- Documento de Pago -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                Documento de Pago <span class="text-red-500">*</span>
+            </label>
+            <div class="flex items-center gap-3">
+                <label for="docPagoFile"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200
+                              hover:bg-slate-50 rounded-lg transition-colors cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Seleccionar archivo
+                </label>
+                <span id="nombreArchivo" class="text-sm text-slate-500 truncate max-w-xs">Sin archivo seleccionado</span>
+                <input type="hidden" asp-for="DocPago" id="docPago"/>
+            </div>
+            <input type="file" id="docPagoFile" name="docPagoFile" class="hidden"
+                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" />
+            <span asp-validation-for="DocPago" class="text-xs text-red-500 mt-1 block"></span>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center gap-3 pt-2 border-t border-slate-100">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                Guardar
+            </button>
+            <a asp-controller="Empresas" asp-action="Index"
+               class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Regresar
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Mostrar nombre del archivo seleccionado
+        document.getElementById('docPagoFile').addEventListener('change', function () {
+            const nombre = this.files.length > 0 ? this.files[0].name : 'Sin archivo seleccionado';
+            document.getElementById('nombreArchivo').textContent = nombre;
+            document.getElementById('docPago').value = nombre;
+        });
+
+        // Calcular fechas al seleccionar suscripción
+        $('#selectSuscripcion').on('change', function () {
+            const suscripcionId = parseInt($(this).val());
+            if (!suscripcionId || suscripcionId === 0) {
+                $('#inputFechaInicio').val('');
+                $('#inputFechaFin').val('');
+                return;
+            }
+
+            $.get('/Suscripciones/ObtenerCantidadDeMeses/' + suscripcionId, function (cantMeses) {
+                if (typeof cantMeses !== 'number' || cantMeses <= 0) return;
+
+                const hoy = new Date();
+                const fechaFin = new Date(hoy);
+                fechaFin.setMonth(fechaFin.getMonth() + cantMeses);
+
+                $('#inputFechaInicio').val(formatDate(hoy));
+                $('#inputFechaFin').val(formatDate(fechaFin));
+            });
+        });
+
+        function formatDate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        // Si ya hay suscripción seleccionada (edición), disparar el cambio
+        const suscripcionInicial = parseInt($('#selectSuscripcion').val());
+        if (suscripcionInicial && suscripcionInicial !== 0) {
+            @if (Model.FechaInicio != default(DateTime))
+            {
+                <text>
+                // Fechas ya existen, no recalcular
+                $('#inputFechaInicio').val('@Model.FechaInicio.ToString("yyyy-MM-dd")');
+                $('#inputFechaFin').val('@Model.FechaFin.ToString("yyyy-MM-dd")');
+                </text>
+            }
+        }
+    </script>
+}

@@ -58,7 +58,7 @@ namespace AppCitasPsicologia.Controllers
             var opcion = await repositorioOpciones.BuscarPorId(id);
             if (opcion is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "La opción no existe." });
             }
             return View(opcion);
         }
@@ -72,7 +72,7 @@ namespace AppCitasPsicologia.Controllers
             var opcionDB = await repositorioOpciones.BuscarPorId(opcion.Id);
             if (opcionDB is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "La opción no existe." });
             }
 
             #region Validaciones
@@ -95,7 +95,7 @@ namespace AppCitasPsicologia.Controllers
             var opcion = await repositorioOpciones.BuscarPorId(id);
             if (opcion is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "La opción no existe." });
             }
             TempData["Toast"] = "Opción eliminada correctamente";
             await repositorioOpciones.Borrar(id);

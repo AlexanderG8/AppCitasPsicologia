@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IRepositorioRoles, RepositorioRoles>();
 builder.Services.AddTransient<IRepositorioOpciones, RepositorioOpciones>();
+builder.Services.AddTransient<IRepositorioEmpresas, RepositorioEmpresas>();
+builder.Services.AddTransient<IRepositorioSuscripciones, RepositorioSuscripciones>();
 
 var app = builder.Build();
 

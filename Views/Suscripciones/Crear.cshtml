@@ -1,0 +1,74 @@
+@using AppCitasPsicologia.Models.Empresas
+@model Suscripciones
+@{
+    ViewData["Title"] = "Crear Suscripción";
+}
+
+<!-- Page header -->
+<div class="mb-6">
+    <div class="flex items-center gap-2 text-sm text-slate-500 mb-1">
+        <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Suscripciones</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+        <span class="text-slate-700">Crear Suscripción</span>
+    </div>
+    <h1 class="text-2xl font-bold text-slate-800">Crear Suscripción</h1>
+</div>
+
+<!-- Form card -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm max-w-lg">
+    <div class="px-6 py-5 border-b border-slate-100">
+        <h2 class="text-base font-semibold text-slate-700">Información de la Suscripción</h2>
+        <p class="text-sm text-slate-400 mt-0.5">Complete los campos para registrar un nuevo plan.</p>
+    </div>
+
+    <form asp-action="Crear" method="post" class="px-6 py-5 space-y-5">
+        <div>
+            <label asp-for="NombreSuscripcion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                Nombre de Suscripción
+            </label>
+            <input asp-for="NombreSuscripcion"
+                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-800
+                          placeholder:text-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                          transition-colors"
+                   placeholder="Ej: Plan Básico" />
+            <span asp-validation-for="NombreSuscripcion" class="text-xs text-red-600 mt-1 block"></span>
+        </div>
+
+        <div>
+            <label asp-for="CantMeses" class="block text-sm font-medium text-slate-700 mb-1.5">
+                Cantidad de Meses
+            </label>
+            <input asp-for="CantMeses" type="number" min="1"
+                   class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-800
+                          placeholder:text-slate-400
+                          focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                          transition-colors"
+                   placeholder="Ej: 6" />
+            <span asp-validation-for="CantMeses" class="text-xs text-red-600 mt-1 block"></span>
+        </div>
+
+        <div class="flex items-center gap-3 pt-2">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700
+                           text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                Guardar
+            </button>
+            <a asp-action="Index"
+               class="inline-flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50
+                      text-slate-600 text-sm font-medium rounded-lg border border-slate-200
+                      hover:border-slate-300 transition-colors">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

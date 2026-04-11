@@ -64,7 +64,7 @@ namespace AppCitasPsicologia.Controllers
             var rol = await repositorioRoles.BuscarPorId(id);
             if (rol is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El rol no existe." });
             }
             return View(rol);
         }
@@ -78,7 +78,7 @@ namespace AppCitasPsicologia.Controllers
             var rolDB = await repositorioRoles.BuscarPorId(rol.Id);
             if (rolDB is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El rol no existe." });
             }
 
             #region Validaciones
@@ -106,7 +106,7 @@ namespace AppCitasPsicologia.Controllers
             var rol = await repositorioRoles.BuscarPorId(id);
             if (rol is null)
             {
-                return RedirectToAction("NoEncontrado", "Home");
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El rol no existe." });
             }
             TempData["Toast"] = "Rol eliminado correctamente";
             await repositorioRoles.Borrar(id);
