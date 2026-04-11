@@ -1,0 +1,90 @@
+@using AppCitasPsicologia.Models.Usuarios
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión — PsicoCitas</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+
+    <div class="w-full max-w-sm">
+
+        <!-- Logo -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-600 shadow-lg mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-800">PsicoCitas</h1>
+            <p class="text-sm text-slate-500 mt-1">Inicia sesión para continuar</p>
+        </div>
+
+        <!-- Card -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+            <form asp-action="Login" method="post" class="space-y-5">
+
+                @if (!ViewData.ModelState.IsValid && ViewData.ModelState.ContainsKey(string.Empty))
+                {
+                    <div class="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                        </svg>
+                        <span asp-validation-summary="All"></span>
+                    </div>
+                }
+
+                <!-- Email -->
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Correo electrónico
+                    </label>
+                    <input asp-for="Email" type="email" autocomplete="email"
+                           placeholder="correo@ejemplo.com"
+                           class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span asp-validation-for="Email" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label asp-for="Password" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Contraseña
+                    </label>
+                    <input asp-for="Password" type="password" autocomplete="current-password"
+                           placeholder="••••••••"
+                           class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span asp-validation-for="Password" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <button type="submit"
+                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700
+                               text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                    Iniciar Sesión
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 mt-6">
+            &copy; @DateTime.Now.Year PsicoCitas. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+</body>
+</html>

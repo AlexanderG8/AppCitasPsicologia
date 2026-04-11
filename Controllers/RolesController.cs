@@ -2,11 +2,13 @@
 using AppCitasPsicologia.Models.Paginacion;
 using AppCitasPsicologia.Models.Roles;
 using AppCitasPsicologia.Repositorys;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace AppCitasPsicologia.Controllers
 {
+    [Authorize]
     public class RolesController : Controller
     {
         private readonly IRepositorioRoles repositorioRoles;

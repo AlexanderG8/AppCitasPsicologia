@@ -1,11 +1,13 @@
 using AppCitasPsicologia.Models.Empresas;
 using AppCitasPsicologia.Models.Paginacion;
 using AppCitasPsicologia.Repositorys;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AppCitasPsicologia.Controllers
 {
+    [Authorize]
     public class EmpresasController : Controller
     {
         private readonly IRepositorioEmpresas repositorioEmpresas;

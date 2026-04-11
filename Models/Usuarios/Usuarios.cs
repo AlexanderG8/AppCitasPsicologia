@@ -12,14 +12,13 @@ namespace AppCitasPsicologia.Models.Usuarios
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]
         [PrimeraLetraMayuscula]
-        public string Nombre { get; set; }
+        public string Nombres { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]
         [PrimeraLetraMayuscula]
-        public string Apellido { get; set; }
+        public string Apellidos { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
-        [StringLength(maximumLength: 120)]
-        public DateTime FechaNacimiento { get; set; }
+        public DateTime FechaNacimiento { get; set; } = DateTime.Now;
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public string TipoDocumento { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
@@ -36,11 +35,16 @@ namespace AppCitasPsicologia.Models.Usuarios
         public DateTime FechaCreacion { get; set; } = DateTime.Now;
         public DateTime? FechaActualizacion { get; set; }
         public DateTime? FechaEliminado { get; set; }
+        public string TokenActivacion { get; set; }
+        public DateTime? TokenExpiracion { get; set; }
 
         [NotMapped]
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [DataType(DataType.Password)]
         public string Contrasena { get; set; }
-
+        [NotMapped]
+        public string ConfirmarContrasena { get; set; }
+        [NotMapped]
+        public string NombreRol { get; set; }
     }
 }
