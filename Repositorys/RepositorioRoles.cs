@@ -13,6 +13,7 @@ namespace AppCitasPsicologia.Repositorys
         Task<IEnumerable<Roles>> Buscar(PaginacionViewModel paginacion);
         Task<int> Contar();
         Task<Roles> BuscarPorId(int id);
+        Task<Roles> BuscarPorCodigo(string codigo);
         Task<Roles> Crear(Roles rol);
         Task<bool> ExisteCodigoRol(string codigoRol, int id);
         Task<bool> ExisteNombreRol(string nombreRol, int id);
@@ -50,6 +51,12 @@ namespace AppCitasPsicologia.Repositorys
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryFirstOrDefaultAsync<Roles>(@"SELECT * FROM Roles WHERE Id = @Id", new { id });
+        }
+
+        public async Task<Roles> BuscarPorCodigo(string codigo)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryFirstOrDefaultAsync<Roles>(@"SELECT * FROM Roles WHERE CodigoRol = @CodigoRol", new { CodigoRol = codigo });
         }
 
         public async Task<Roles> Crear(Roles rol)

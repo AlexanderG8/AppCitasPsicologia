@@ -1,0 +1,190 @@
+@using AppCitasPsicologia.Models.Usuarios
+@using AppCitasPsicologia.Models.Paginacion
+@model PaginacionRespuesta<Usuarios>
+@{
+    ViewData["Title"] = "Psicólogos";
+    var empresaId = (int)ViewBag.EmpresaId;
+    var nombreEmpresa = ViewBag.NombreEmpresa as string;
+    var nombreRol = ViewBag.NombreRol as string;
+}
+
+<!-- Page header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Psicólogos</h1>
+        <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+    </div>
+    <a asp-action="Crear"
+       class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm self-start sm:self-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Crear Nuevo
+    </a>
+</div>
+
+<!-- Card -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+            <label for="cantidadRecordsPorPagina" class="text-sm text-slate-500 whitespace-nowrap">Mostrar</label>
+            <select asp-for="@Model.RecordsPorPagina" id="cantidadRecordsPorPagina"
+                    class="text-sm border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer">
+                <option>3</option>
+                <option>5</option>
+                <option>10</option>
+            </select>
+            <span class="text-sm text-slate-500">registros</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                @nombreRol
+            </span>
+            <span class="text-xs text-slate-400">
+                @Model.CantidadTotalRecords psicólogo@(Model.CantidadTotalRecords == 1 ? "" : "s")
+            </span>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider w-16">Id</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Correo</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Celular</th>
+                    <th class="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach (var psi in Model.Elementos)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">@psi.Id</td>
+                        <td class="px-5 py-3.5">
+                            <div class="font-medium text-slate-700">@psi.Nombres @psi.Apellidos</div>
+                            <div class="text-xs text-slate-400 mt-0.5">@psi.TipoDocumento: @psi.NroDocumento</div>
+                        </td>
+                        <td class="px-5 py-3.5 text-slate-600">@psi.Email</td>
+                        <td class="px-5 py-3.5 text-slate-600">@psi.NroCelular</td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center justify-end gap-2">
+                                <a asp-action="ServiciosPsicologo" asp-route-id="@psi.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors border border-emerald-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                    Servicios
+                                </a>
+                                <a asp-action="Editar" asp-route-id="@psi.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    Editar
+                                </a>
+                                <form asp-controller="Usuarios" asp-action="RestoreKey" method="post" class="inline">
+                                    <input type="hidden" name="id" value="@psi.Id" />
+                                    <input type="hidden" name="empresaId" value="@empresaId" />
+                                    <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Psicologos")" />
+                                    <button type="submit"
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors border border-amber-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                                        </svg>
+                                        Restore Key
+                                    </button>
+                                </form>
+                                <button type="button" onclick="abrirModalBorrar(@psi.Id, '@psi.Nombres @psi.Apellidos', @empresaId)"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Elementos.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="px-5 py-10 text-center text-slate-400 text-sm">
+                            No hay psicólogos registrados.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-5 py-4 border-t border-slate-100">
+        <partial name="_Paginacion" />
+    </div>
+</div>
+
+<!-- Modal Borrar -->
+<div id="modalBorrar" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-sm mx-4 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-base font-semibold text-slate-800">Confirmar eliminación</h3>
+                <p class="text-sm text-slate-500 mt-0.5">
+                    ¿Estás seguro de borrar a <span id="modalNombrePsi" class="font-medium text-slate-700"></span>?
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center justify-end gap-3 mt-6">
+            <button type="button" onclick="cerrarModalBorrar()"
+                    class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                Cancelar
+            </button>
+            <form id="formBorrar" asp-controller="Usuarios" asp-action="BorrarUsuario" method="post">
+                <input type="hidden" id="inputIdBorrar" name="id" />
+                <input type="hidden" id="inputEmpresaIdBorrar" name="empresaId" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Psicologos")" />
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                    Borrar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#cantidadRecordsPorPagina").change(function () {
+            const recordsPorPagina = $(this).val();
+            location.href = `/Psicologos?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+        });
+
+        function abrirModalBorrar(id, nombre, empresaId) {
+            document.getElementById('inputIdBorrar').value = id;
+            document.getElementById('inputEmpresaIdBorrar').value = empresaId;
+            document.getElementById('modalNombrePsi').textContent = '"' + nombre + '"';
+            document.getElementById('modalBorrar').classList.remove('hidden');
+            document.getElementById('modalBorrar').classList.add('flex');
+        }
+
+        function cerrarModalBorrar() {
+            document.getElementById('modalBorrar').classList.add('hidden');
+            document.getElementById('modalBorrar').classList.remove('flex');
+        }
+
+        document.getElementById('modalBorrar').addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalBorrar();
+        });
+    </script>
+}

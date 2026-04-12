@@ -1,6 +1,7 @@
 using AppCitasPsicologia.Models.Paginacion;
 using AppCitasPsicologia.Models.Usuarios;
 using AppCitasPsicologia.Repositorys;
+using ManejoPresupuesto.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ namespace AppCitasPsicologia.Controllers
         private readonly IRepositorioEmpresas repositorioEmpresas;
         private readonly IServiceEmail serviceEmail;
         private readonly IPasswordHasher<Usuarios> passwordHasher;
+        private readonly IServicioUsuario servicioUsuario;
         private readonly SignInManager<Usuarios> signInManager;
 
         public UsuariosController(
@@ -26,6 +28,7 @@ namespace AppCitasPsicologia.Controllers
             IRepositorioEmpresas repositorioEmpresas,
             IServiceEmail serviceEmail,
             IPasswordHasher<Usuarios> passwordHasher,
+            IServicioUsuario servicioUsuario,
             SignInManager<Usuarios> signInManager)
         {
             this.repositorioUsuarios = repositorioUsuarios;
@@ -33,6 +36,7 @@ namespace AppCitasPsicologia.Controllers
             this.repositorioEmpresas = repositorioEmpresas;
             this.serviceEmail = serviceEmail;
             this.passwordHasher = passwordHasher;
+            this.servicioUsuario = servicioUsuario;
             this.signInManager = signInManager;
         }
 
@@ -70,7 +74,7 @@ namespace AppCitasPsicologia.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(Usuarios modelo)
+        public async Task<IActionResult> Crear(Usuarios modelo, string returnUrl = null)
         {
             ModelState.Remove(nameof(modelo.Contrasena));
 
@@ -100,6 +104,9 @@ namespace AppCitasPsicologia.Controllers
             await serviceEmail.EnviarCorreoIngresarContrasena(modelo.Email, modelo.Nombres, link);
 
             TempData["Toast"] = $"Usuario creado. Se envió el enlace de acceso a {modelo.Email}.";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", new { id = modelo.EmpresaId });
         }
 
@@ -116,7 +123,7 @@ namespace AppCitasPsicologia.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Editar(Usuarios modelo)
+        public async Task<IActionResult> Editar(Usuarios modelo, string returnUrl = null)
         {
             ModelState.Remove(nameof(modelo.Contrasena));
 
@@ -134,11 +141,14 @@ namespace AppCitasPsicologia.Controllers
             modelo.FechaActualizacion = DateTime.Now;
             await repositorioUsuarios.Actualizar(modelo);
             TempData["Toast"] = "Usuario actualizado correctamente.";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", new { id = modelo.EmpresaId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> BorrarUsuario(int id, int empresaId)
+        public async Task<IActionResult> BorrarUsuario(int id, int empresaId, string returnUrl = null)
         {
             var usuario = await repositorioUsuarios.BuscarPorId(id);
             if (usuario is null)
@@ -146,6 +156,9 @@ namespace AppCitasPsicologia.Controllers
 
             await repositorioUsuarios.Borrar(id);
             TempData["Toast"] = "Usuario eliminado correctamente.";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", new { id = empresaId });
         }
 
@@ -221,7 +234,7 @@ namespace AppCitasPsicologia.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RestoreKey(int id, int empresaId)
+        public async Task<IActionResult> RestoreKey(int id, int empresaId, string returnUrl)
         {
             var usuario = await repositorioUsuarios.BuscarPorId(id);
             if (usuario is null)
@@ -235,6 +248,8 @@ namespace AppCitasPsicologia.Controllers
             await serviceEmail.EnviarCorreoIngresarContrasena(usuario.Email, usuario.Nombres, link);
 
             TempData["Toast"] = $"Correo de acceso reenviado a {usuario.Email}.";
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index", new { id = empresaId });
         }
 
@@ -258,6 +273,16 @@ namespace AppCitasPsicologia.Controllers
             ViewBag.Roles = select;
             ViewBag.EmpresaId = empresaId;
             ViewBag.NombreEmpresa = nombreEmpresa;
+        }
+
+        public async Task<IActionResult> VerificarNroDocumento (string NroDocumento, int Id)
+        {
+            var yaExisteNroDocumento = await repositorioUsuarios.ExisteNroDocumento(NroDocumento, Id);
+            if (yaExisteNroDocumento)
+            {
+                return Json($"El número de documento {NroDocumento} ya existe.");
+            }
+            return Json(true);
         }
     }
 }

@@ -6,6 +6,7 @@ namespace AppCitasPsicologia.Models.Servicios
     public class Servicios
     {
         public int Id { get; set; }
+        public int EmpresaId { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         [StringLength(maximumLength: 120)]
         [PrimeraLetraMayuscula]

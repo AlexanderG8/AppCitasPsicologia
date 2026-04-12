@@ -17,6 +17,7 @@ namespace AppCitasPsicologia.Repositorys
         Task GuardarTokenActivacion(int id, string token, DateTime expiracion);
         Task<Usuarios> BuscarPorToken(string token);
         Task ActualizarContrasena(int id, string contrasenaHash);
+        Task<bool> ExisteNroDocumento(string numeroDocumento, int id = 0);
     }
 
     public class RepositorioUsuarios : IRepositorioUsuarios
@@ -121,6 +122,13 @@ namespace AppCitasPsicologia.Repositorys
             await connection.ExecuteAsync(
                 "UPDATE USUARIOS SET ContrasenaHash = @contrasenaHash, TokenActivacion = NULL, TokenExpiracion = NULL WHERE Id = @id",
                 new { id, contrasenaHash });
+        }
+
+        public async Task<bool> ExisteNroDocumento(string numeroDocumento, int id = 0)
+        {
+            using var connection = new SqlConnection(connectionString);
+            var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Usuarios WHERE NroDocumento = @NroDocumento AND Id <> @Id  AND FechaEliminado IS NULL", new { NroDocumento = numeroDocumento, Id = id });
+            return existe == 1;
         }
     }
 }

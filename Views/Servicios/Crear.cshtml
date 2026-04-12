@@ -1,0 +1,85 @@
+@using AppCitasPsicologia.Models.Servicios
+@model Servicios
+@{
+    ViewData["Title"] = "Crear Servicio";
+    var nombreEmpresa = ViewBag.NombreEmpresa as string;
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-controller="Empresas" asp-action="Index" class="hover:text-indigo-600 transition-colors">Empresas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Servicios</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Crear</span>
+</nav>
+
+<!-- Page header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Crear Servicio</h1>
+    <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+</div>
+
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 max-w-2xl">
+    <form asp-action="Crear" method="post" class="space-y-5">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Nombre del Servicio -->
+            <div class="sm:col-span-2">
+                <label asp-for="NombreServicio" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nombre del servicio
+                </label>
+                <input asp-for="NombreServicio" type="text" placeholder="Ej. Terapia individual"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                <span asp-validation-for="NombreServicio" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Costo -->
+            <div>
+                <label asp-for="CostoServicio" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Costo (S/)
+                </label>
+                <input asp-for="CostoServicio" type="number" step="0.01" min="0" placeholder="0.00"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                <span asp-validation-for="CostoServicio" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Descripción -->
+            <div class="sm:col-span-2">
+                <label asp-for="Descripcion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Descripción
+                </label>
+                <textarea asp-for="Descripcion" rows="3" placeholder="Breve descripción del servicio..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+                <span asp-validation-for="Descripcion" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                Guardar
+            </button>
+            <a asp-action="Index"
+               class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

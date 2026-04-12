@@ -22,8 +22,14 @@ builder.Services.AddTransient<IRepositorioRoles, RepositorioRoles>();
 builder.Services.AddTransient<IRepositorioOpciones, RepositorioOpciones>();
 builder.Services.AddTransient<IRepositorioEmpresas, RepositorioEmpresas>();
 builder.Services.AddTransient<IRepositorioSuscripciones, RepositorioSuscripciones>();
+builder.Services.AddTransient<IRepositorioServicios, RepositorioServicios>();
+builder.Services.AddTransient<IRepositorioAdministradores, RepositorioAdministradores>();
+builder.Services.AddTransient<IRepositorioPsicologos, RepositorioPsicologos>();
+builder.Services.AddTransient<IRepositorioPacientes, RepositorioPacientes>();
+builder.Services.AddTransient<IRepositorioServiciosPsicologos, RepositorioServiciosPsicologos>();
 
 builder.Services.AddTransient<IRepositorioUsuarios, RepositorioUsuarios>();
+builder.Services.AddTransient<IServicioUsuario, ServicioUsuarios>();
 builder.Services.AddTransient<IUserStore<Usuarios>, UsuarioStore>();
 builder.Services.AddTransient<IServiceEmail, ServiceEmailGmail>();
 builder.Services.AddIdentityCore<Usuarios>(opciones =>

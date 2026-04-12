@@ -2,7 +2,7 @@
 using AppCitasPsicologia.Repositorys;
 using Microsoft.AspNetCore.Identity;
 
-namespace ManejoPresupuesto.Services
+namespace AppCitasPsicologia.Services
 {
     public class UsuarioStore : IUserStore<Usuarios>, IUserEmailStore<Usuarios>, IUserPasswordStore<Usuarios>
     {

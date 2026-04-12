@@ -1,4 +1,5 @@
 ﻿using AppCitasPsicologia.Models.Validations;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,6 +23,7 @@ namespace AppCitasPsicologia.Models.Usuarios
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public string TipoDocumento { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
+        [Remote(action: "VerificarNroDocumento", controller: "Usuarios", AdditionalFields = nameof(Id))]
         public string NroDocumento { get; set; }
         [Required(ErrorMessage = "El campo {0} es requerido")]
         public string Email { get; set; }
