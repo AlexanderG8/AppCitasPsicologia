@@ -167,7 +167,7 @@
     <script>
         $("#cantidadRecordsPorPagina").change(function () {
             const recordsPorPagina = $(this).val();
-            location.href = `/Psicologos?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+            location.href = `/Psicologos/Index?pagina=1&recordsPorPagina=${recordsPorPagina}`;
         });
 
         function abrirModalBorrar(id, nombre, empresaId) {

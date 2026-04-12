@@ -149,7 +149,7 @@
     <script>
         $("#cantidadRecordsPorPagina").change(function () {
             const recordsPorPagina = $(this).val();
-            location.href = `/Servicios?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+            location.href = `/Servicios/Index?pagina=1&recordsPorPagina=${recordsPorPagina}`;
         });
 
         function abrirModalBorrar(id, nombre) {

@@ -254,6 +254,19 @@ namespace AppCitasPsicologia.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Perfil()
+        {
+            var usuarioId = servicioUsuario.ObtenerUsuarioId();
+            var usuario = await repositorioUsuarios.BuscarPorId(usuarioId);
+            if (usuario is null)
+                return RedirectToAction("NoEncontrado", "Home", new { mensaje = "El usuario no existe." });
+
+            var rol = usuario.RolId > 0 ? await repositorioRoles.BuscarPorId(usuario.RolId) : null;
+            usuario.NombreRol = rol?.NombreRol ?? "Sin rol";
+            return View(usuario);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);

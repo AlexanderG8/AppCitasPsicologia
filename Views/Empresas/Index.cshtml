@@ -155,7 +155,7 @@
     <script>
         $("#cantidadRecordsPorPagina").change(function () {
             const recordsPorPagina = $(this).val();
-            location.href = `/Empresas/?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+            location.href = `/Empresas/Index?pagina=1&recordsPorPagina=${recordsPorPagina}`;
         });
 
         function abrirModalBorrar(id, nombre) {

@@ -14,6 +14,7 @@ namespace AppCitasPsicologia.Repositorys
         Task<Opciones> BuscarPorId(int id);
         Task<Opciones> Crear(Opciones opcion);
         Task<bool> ExisteNombreOpcion(string nombreOpcion, int id);
+        Task<IEnumerable<Opciones>> ObtenerOpcionesPorRol(int rolId);
     }
     public class RepositorioOpciones : IRepositorioOpciones
     {
@@ -72,6 +73,19 @@ namespace AppCitasPsicologia.Repositorys
             using var connection = new SqlConnection(connectionString);
             var existe = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Opciones WHERE NombreOpcion = @NombreOpcion AND Id <> @Id", new { nombreOpcion, id });
             return existe == 1;
+        }
+
+        public async Task<IEnumerable<Opciones>> ObtenerOpcionesPorRol(int rolId)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<Opciones>(@"
+                SELECT O.Id, O.NombreOpcion, O.Controlador, O.Accion
+                FROM OPCIONES O
+                INNER JOIN OPCIONESROL OR2 ON O.Id = OR2.OpcionId
+                WHERE OR2.RolId = @rolId
+                  AND O.FechaEliminado IS NULL
+                ORDER BY O.NombreOpcion",
+                new { rolId });
         }
     }
 }

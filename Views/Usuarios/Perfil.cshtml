@@ -1,0 +1,109 @@
+@using AppCitasPsicologia.Models.Usuarios
+@model Usuarios
+@{
+    ViewData["Title"] = "Mi Perfil";
+    var inicial = !string.IsNullOrEmpty(Model.Nombres) ? char.ToUpper(Model.Nombres[0]).ToString() : "U";
+}
+
+<!-- Page header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Mi Perfil</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Información de tu cuenta</p>
+</div>
+
+<div class="max-w-3xl space-y-5">
+
+    <!-- Identity card -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-full bg-indigo-500 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                @inicial
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold text-slate-800">@Model.Nombres @Model.Apellidos</h2>
+                <span class="inline-flex items-center mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                    @Model.NombreRol
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personal info -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Información personal</h3>
+        </div>
+        <dl class="divide-y divide-slate-100">
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Nombres</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.Nombres</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Apellidos</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.Apellidos</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Fecha de nacimiento</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.FechaNacimiento.ToString("dd/MM/yyyy")</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Tipo de documento</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.TipoDocumento</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Nro. de documento</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.NroDocumento</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Dirección</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.Direccion</dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Contact info -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Contacto</h3>
+        </div>
+        <dl class="divide-y divide-slate-100">
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Correo electrónico</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.Email</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Celular</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.NroCelular</dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Account info -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Cuenta</h3>
+        </div>
+        <dl class="divide-y divide-slate-100">
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Rol</dt>
+                <dd class="col-span-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        @Model.NombreRol
+                    </span>
+                </dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Miembro desde</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.FechaCreacion.ToString("dd/MM/yyyy")</dd>
+            </div>
+            @if (Model.FechaActualizacion.HasValue)
+            {
+                <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                    <dt class="text-xs font-medium text-slate-500 uppercase tracking-wide self-center">Última actualización</dt>
+                    <dd class="col-span-2 text-sm text-slate-700">@Model.FechaActualizacion.Value.ToString("dd/MM/yyyy")</dd>
+                </div>
+            }
+        </dl>
+    </div>
+
+</div>

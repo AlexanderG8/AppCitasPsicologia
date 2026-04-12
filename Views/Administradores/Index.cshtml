@@ -160,7 +160,8 @@
     <script>
         $("#cantidadRecordsPorPagina").change(function () {
             const recordsPorPagina = $(this).val();
-            location.href = `/Administradores?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+            location.href = `/Administradores/Index?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+            
         });
 
         function abrirModalBorrar(id, nombre, empresaId) {
