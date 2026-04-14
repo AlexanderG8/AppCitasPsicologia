@@ -1,0 +1,179 @@
+@using AppCitasPsicologia.Models.Citas
+@model Citas
+@{
+    ViewData["Title"] = "Crear Cita";
+    var nombreEmpresa = ViewBag.NombreEmpresa as string;
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Citas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Crear</span>
+</nav>
+
+<!-- Page header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Crear Cita</h1>
+    <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+</div>
+
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 max-w-2xl">
+    <form asp-action="Crear" method="post" enctype="multipart/form-data" class="space-y-5">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Paciente -->
+            <div>
+                <label asp-for="ClienteId" class="block text-sm font-medium text-slate-700 mb-1.5">Paciente</label>
+                <select asp-for="ClienteId" asp-items="@(ViewBag.Pacientes as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)"
+                        class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                </select>
+                <span asp-validation-for="ClienteId" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Psicólogo -->
+            <div>
+                <label asp-for="PsicologoId" class="block text-sm font-medium text-slate-700 mb-1.5">Psicólogo</label>
+                <select asp-for="PsicologoId" id="selectPsicologo"
+                        asp-items="@(ViewBag.Psicologos as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)"
+                        class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                </select>
+                <span asp-validation-for="PsicologoId" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Fecha de Reserva -->
+            <div>
+                <label asp-for="FechaReserva" class="block text-sm font-medium text-slate-700 mb-1.5">Fecha de reserva</label>
+                <input asp-for="FechaReserva" type="date"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                <span asp-validation-for="FechaReserva" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Doc. de Pago -->
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Documento de pago
+                    <span class="text-slate-400 font-normal">(opcional)</span>
+                </label>
+                <input type="file" name="docPago" accept=".pdf,.jpg,.jpeg,.png"
+                       class="w-full text-sm text-slate-500 border border-slate-200 rounded-lg
+                              file:mr-3 file:py-2 file:px-3 file:rounded-l-lg file:border-0
+                              file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700
+                              hover:file:bg-indigo-100 cursor-pointer" />
+                <p class="text-xs text-slate-400 mt-1">PDF, JPG o PNG</p>
+            </div>
+
+            <!-- Hora Inicio -->
+            <div>
+                <label asp-for="HoraInicio" class="block text-sm font-medium text-slate-700 mb-1.5">Hora de inicio</label>
+                <input asp-for="HoraInicio" type="time"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                <span asp-validation-for="HoraInicio" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Hora Fin -->
+            <div>
+                <label asp-for="HoraFin" class="block text-sm font-medium text-slate-700 mb-1.5">Hora de fin</label>
+                <input asp-for="HoraFin" type="time"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                <span asp-validation-for="HoraFin" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Detalle de la Cita -->
+            <div class="sm:col-span-2">
+                <label asp-for="DetalleCita" class="block text-sm font-medium text-slate-700 mb-1.5">Detalle de la cita</label>
+                <textarea asp-for="DetalleCita" rows="3" placeholder="Descripción o motivo de la cita..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+                <span asp-validation-for="DetalleCita" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+        </div>
+
+        <!-- Servicios del psicólogo -->
+        <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Servicios a tomar</label>
+            <div id="serviciosContainer"
+                 class="min-h-[60px] rounded-lg border border-slate-200 bg-slate-50 p-4">
+                <p id="serviciosPlaceholder" class="text-sm text-slate-400">
+                    Selecciona un psicólogo para ver sus servicios disponibles.
+                </p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-3 pt-2">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+                Guardar
+            </button>
+            <a asp-action="Index"
+               class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function renderServicios(servicios, container, placeholder) {
+            if (!servicios || servicios.length === 0) {
+                container.innerHTML = '<p class="text-sm text-slate-400">El psicólogo no tiene servicios asignados.</p>';
+                return;
+            }
+            let html = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">';
+            servicios.forEach(function (s) {
+                html += `
+                    <label class="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 cursor-pointer transition-colors">
+                        <input type="checkbox" name="serviciosSeleccionados" value="${s.id}"
+                               ${s.estado === 1 ? 'checked' : ''}
+                               class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 flex-shrink-0">
+                        <div class="min-w-0">
+                            <div class="text-sm font-medium text-slate-700 truncate">${s.nombreServicio}</div>
+                            <div class="text-xs text-slate-400">S/ ${parseFloat(s.costoServicio).toFixed(2)}</div>
+                        </div>
+                    </label>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectPsicologo = document.getElementById('selectPsicologo');
+            const container = document.getElementById('serviciosContainer');
+
+            function cargarServicios(psicologoId) {
+                if (!psicologoId || psicologoId == 0) {
+                    container.innerHTML = '<p class="text-sm text-slate-400">Selecciona un psicólogo para ver sus servicios disponibles.</p>';
+                    return;
+                }
+                container.innerHTML = '<p class="text-sm text-slate-400 animate-pulse">Cargando servicios...</p>';
+                fetch(`/Citas/ObtenerServiciosPsicologo?psicologoId=${psicologoId}`)
+                    .then(function (r) { return r.json(); })
+                    .then(function (servicios) { renderServicios(servicios, container); });
+            }
+
+            selectPsicologo.addEventListener('change', function () {
+                cargarServicios(this.value);
+            });
+
+            // Auto-cargar si hay psicólogo seleccionado (error de validación)
+            if (selectPsicologo.value && selectPsicologo.value != 0) {
+                cargarServicios(selectPsicologo.value);
+            }
+        });
+    </script>
+}

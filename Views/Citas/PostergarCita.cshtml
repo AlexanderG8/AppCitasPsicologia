@@ -1,0 +1,128 @@
+@using AppCitasPsicologia.Models.Citas
+@model PostergarCitaViewModel
+@{
+    ViewData["Title"] = "Postergar Cita";
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Citas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Postergar Cita</span>
+</nav>
+
+<!-- Page header -->
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-800">Postergar Cita</h1>
+    <p class="text-sm text-slate-500 mt-0.5">Reprogramar la fecha y hora de la cita</p>
+</div>
+
+<div class="max-w-2xl space-y-5">
+
+    <!-- Resumen de la cita actual -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+        <div class="flex items-start gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <div class="text-sm space-y-1">
+                <p class="font-semibold text-amber-800">Cita actual</p>
+                <p class="text-amber-700">
+                    <span class="font-medium">Paciente:</span> @Model.NombreCliente
+                </p>
+                <p class="text-amber-700">
+                    <span class="font-medium">Psicólogo:</span> @Model.NombrePsicologo
+                </p>
+                <p class="text-amber-700">
+                    <span class="font-medium">Fecha:</span>
+                    @Model.FechaReservaActual.ToString("dd/MM/yyyy") —
+                    @Model.HoraInicioActual.ToString(@"hh\:mm") a @Model.HoraFinActual.ToString(@"hh\:mm")
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <form asp-action="PostergarCita" method="post" class="space-y-5">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="NombreCliente" type="hidden" />
+            <input asp-for="NombrePsicologo" type="hidden" />
+            <input asp-for="FechaReservaActual" type="hidden" />
+            <input asp-for="HoraInicioActual" type="hidden" />
+            <input asp-for="HoraFinActual" type="hidden" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                <!-- Nueva Fecha -->
+                <div>
+                    <label asp-for="NuevaFechaReserva" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Nueva fecha de reserva
+                    </label>
+                    <input asp-for="NuevaFechaReserva" type="date"
+                           class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span asp-validation-for="NuevaFechaReserva" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Espacio vacío para alinear -->
+                <div class="hidden sm:block"></div>
+
+                <!-- Nueva Hora Inicio -->
+                <div>
+                    <label asp-for="NuevaHoraInicio" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Nueva hora de inicio
+                    </label>
+                    <input asp-for="NuevaHoraInicio" type="time"
+                           class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span asp-validation-for="NuevaHoraInicio" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Nueva Hora Fin -->
+                <div>
+                    <label asp-for="NuevaHoraFin" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Nueva hora de fin
+                    </label>
+                    <input asp-for="NuevaHoraFin" type="time"
+                           class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span asp-validation-for="NuevaHoraFin" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+                <!-- Motivo -->
+                <div class="sm:col-span-2">
+                    <label asp-for="MotivoPostergacion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Motivo de postergación
+                    </label>
+                    <textarea asp-for="MotivoPostergacion" rows="3" placeholder="Explica el motivo por el que se posterga la cita..."
+                              class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                     focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+                    <span asp-validation-for="MotivoPostergacion" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3 pt-2">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    Postergar Cita
+                </button>
+                <a asp-action="Index"
+                   class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

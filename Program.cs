@@ -27,6 +27,9 @@ builder.Services.AddTransient<IRepositorioAdministradores, RepositorioAdministra
 builder.Services.AddTransient<IRepositorioPsicologos, RepositorioPsicologos>();
 builder.Services.AddTransient<IRepositorioPacientes, RepositorioPacientes>();
 builder.Services.AddTransient<IRepositorioServiciosPsicologos, RepositorioServiciosPsicologos>();
+builder.Services.AddTransient<IRepositorioDetallesCitas, RepositorioDetallesCitas>();
+builder.Services.AddTransient<IRepositorioCitas, RepositorioCitas>();
+builder.Services.AddTransient<IRepositorioServiciosCitas, RepositorioServiciosCitas>();
 
 builder.Services.AddTransient<IRepositorioUsuarios, RepositorioUsuarios>();
 builder.Services.AddTransient<IServicioUsuario, ServicioUsuarios>();

@@ -1,0 +1,104 @@
+@using AppCitasPsicologia.Models.Citas
+@model CancelarCitaViewModel
+@{
+    ViewData["Title"] = "Cancelar Cita";
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Citas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Cancelar</span>
+</nav>
+
+<!-- Page header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Cancelar Cita</h1>
+        <p class="text-sm text-slate-500 mt-0.5">Cita #@Model.Id</p>
+    </div>
+    <a asp-action="Index"
+       class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors self-start sm:self-auto">
+        Volver
+    </a>
+</div>
+
+<div class="max-w-2xl space-y-5">
+
+    <!-- Resumen de la cita -->
+    <div class="bg-red-50 border border-red-200 rounded-xl overflow-hidden">
+        <div class="px-6 py-4 border-b border-red-200 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            </svg>
+            <h3 class="text-sm font-semibold text-red-700">Esta acción cancelará la siguiente cita</h3>
+        </div>
+        <dl class="divide-y divide-red-100">
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-red-500 uppercase tracking-wide self-center">Paciente</dt>
+                <dd class="col-span-2 text-sm font-medium text-slate-700">@Model.NombreCliente</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-red-500 uppercase tracking-wide self-center">Psicólogo</dt>
+                <dd class="col-span-2 text-sm text-slate-700">@Model.NombrePsicologo</dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-red-500 uppercase tracking-wide self-center">Fecha</dt>
+                <dd class="col-span-2 text-sm text-slate-700">
+                    @Model.FechaReserva.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-PE"))
+                </dd>
+            </div>
+            <div class="grid grid-cols-3 gap-4 px-6 py-3.5">
+                <dt class="text-xs font-medium text-red-500 uppercase tracking-wide self-center">Horario</dt>
+                <dd class="col-span-2 text-sm text-slate-700">
+                    @Model.HoraInicio.ToString(@"hh\:mm") – @Model.HoraFin.ToString(@"hh\:mm")
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Formulario de cancelación -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+        <form asp-action="CancelarCita" method="post" class="space-y-5">
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="NombreCliente" type="hidden" />
+            <input asp-for="NombrePsicologo" type="hidden" />
+            <input asp-for="FechaReserva" type="hidden" />
+            <input asp-for="HoraInicio" type="hidden" />
+            <input asp-for="HoraFin" type="hidden" />
+
+            <div>
+                <label asp-for="MotivoCancelacion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Motivo de cancelación
+                    <span class="text-red-500">*</span>
+                </label>
+                <textarea asp-for="MotivoCancelacion" rows="4"
+                          placeholder="Describe el motivo por el cual se cancela esta cita..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent resize-none"></textarea>
+                <span asp-validation-for="MotivoCancelacion" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                <button type="submit"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Confirmar cancelación
+                </button>
+                <a asp-action="Index"
+                   class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

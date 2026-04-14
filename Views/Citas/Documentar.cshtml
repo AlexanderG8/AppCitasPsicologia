@@ -1,0 +1,318 @@
+@using AppCitasPsicologia.Models.Citas
+@model DetallesCitas
+@{
+    ViewData["Title"] = "Documentar Sesión";
+    var nombreCliente = ViewBag.NombreCliente as string;
+    var nombrePsicologo = ViewBag.NombrePsicologo as string;
+    var fechaReserva = (DateTime?)ViewBag.FechaReserva;
+    var asistenciaActual = ViewBag.Asistencia as string;
+    bool esEdicion = Model.Id > 0;
+}
+
+<!-- Breadcrumb -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 mb-6">
+    <a asp-action="Index" class="hover:text-indigo-600 transition-colors">Citas</a>
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+    <span class="text-slate-700 font-medium">Documentar</span>
+</nav>
+
+<!-- Page header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Documentar Sesión</h1>
+        <p class="text-sm text-slate-500 mt-0.5">
+            @nombreCliente · @nombrePsicologo
+            @if (fechaReserva.HasValue)
+            {
+                <span>· @fechaReserva.Value.ToString("dd/MM/yyyy")</span>
+            }
+        </p>
+    </div>
+</div>
+
+<form asp-action="Documentar" method="post" class="max-w-3xl space-y-5">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="CitaId" type="hidden" />
+    <input asp-for="FechaRegistro" type="hidden" />
+
+    <!-- Evaluación de la sesión -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Evaluación de la sesión</h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- ¿Asistió? -->
+            <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                    ¿Asistió el paciente? <span class="text-red-500">*</span>
+                </label>
+                <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border cursor-pointer transition-colors
+                                  @(asistenciaActual == "Asistió" ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
+                        <input type="radio" name="asistencia" value="Asistió"
+                               @(asistenciaActual == "Asistió" ? "checked" : "")
+                               class="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500" />
+                        <span class="text-sm font-medium">Asistió</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border cursor-pointer transition-colors
+                                  @(asistenciaActual == "No Asistió" ? "bg-red-50 border-red-300 text-red-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
+                        <input type="radio" name="asistencia" value="No Asistió"
+                               @(asistenciaActual == "No Asistió" ? "checked" : "")
+                               class="w-4 h-4 text-red-500 border-slate-300 focus:ring-red-400" />
+                        <span class="text-sm font-medium">No Asistió</span>
+                    </label>
+                    @if (string.IsNullOrEmpty(asistenciaActual))
+                    {
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-500">
+                            Sin registrar
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <!-- Motivo de consulta -->
+            <div class="sm:col-span-2">
+                <label asp-for="MotivoConsulta" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Motivo de consulta <span class="text-red-500">*</span>
+                </label>
+                <textarea asp-for="MotivoConsulta" rows="2"
+                          placeholder="Describe el motivo principal por el que el paciente asiste a esta sesión..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="MotivoConsulta" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Estado emocional -->
+            <div>
+                <label asp-for="EstadoEmocional" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Estado emocional <span class="text-red-500">*</span>
+                </label>
+                <select asp-for="EstadoEmocional"
+                        class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                    <option value="">-- Seleccione --</option>
+                    <option value="Estable">Estable</option>
+                    <option value="Ansioso">Ansioso</option>
+                    <option value="Deprimido">Deprimido</option>
+                    <option value="Irritable">Irritable</option>
+                    <option value="Eufórico">Eufórico</option>
+                    <option value="Triste">Triste</option>
+                    <option value="Angustiado">Angustiado</option>
+                    <option value="Confundido">Confundido</option>
+                </select>
+                <span asp-validation-for="EstadoEmocional" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Síntomas -->
+            <div>
+                <label asp-for="Sintomas" class="block text-sm font-medium text-slate-700 mb-1.5">Síntomas</label>
+                <input asp-for="Sintomas" type="text"
+                       placeholder="Ej. insomnio, irritabilidad, llanto frecuente..."
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="Sintomas" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Nivel de ansiedad -->
+            <div>
+                <label asp-for="NivelAnsiedad" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nivel de ansiedad
+                    <span class="text-slate-400 font-normal">(1 – 10)</span>
+                </label>
+                <input asp-for="NivelAnsiedad" type="number" min="1" max="10"
+                       placeholder="1 = mínimo, 10 = máximo"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="NivelAnsiedad" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Nivel de depresión -->
+            <div>
+                <label asp-for="NivelDepresion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nivel de depresión
+                    <span class="text-slate-400 font-normal">(1 – 10)</span>
+                </label>
+                <input asp-for="NivelDepresion" type="number" min="1" max="10"
+                       placeholder="1 = mínimo, 10 = máximo"
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="NivelDepresion" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Desarrollo de la sesión -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Desarrollo de la sesión</h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Observaciones de la sesión -->
+            <div class="sm:col-span-2">
+                <label asp-for="ObservacionesSesion" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Observaciones de la sesión <span class="text-red-500">*</span>
+                </label>
+                <textarea asp-for="ObservacionesSesion" rows="4"
+                          placeholder="Describe el desarrollo de la sesión, actitud del paciente, temas tratados y conclusiones generales..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="ObservacionesSesion" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Temas abordados -->
+            <div>
+                <label asp-for="TemasAbordados" class="block text-sm font-medium text-slate-700 mb-1.5">Temas abordados</label>
+                <input asp-for="TemasAbordados" type="text"
+                       placeholder="Ej. duelo, relaciones familiares, autoestima..."
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="TemasAbordados" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Técnica aplicada -->
+            <div>
+                <label asp-for="TecnicaAplicada" class="block text-sm font-medium text-slate-700 mb-1.5">Técnica aplicada</label>
+                <input asp-for="TecnicaAplicada" type="text"
+                       placeholder="Ej. reestructuración cognitiva, mindfulness, EMDR..."
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="TecnicaAplicada" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Respuesta del paciente -->
+            <div class="sm:col-span-2">
+                <label asp-for="RespuestaPaciente" class="block text-sm font-medium text-slate-700 mb-1.5">Respuesta del paciente</label>
+                <textarea asp-for="RespuestaPaciente" rows="3"
+                          placeholder="Describe cómo reaccionó el paciente ante las intervenciones realizadas durante la sesión..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="RespuestaPaciente" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Plan y seguimiento -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Plan y seguimiento</h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <!-- Diagnóstico -->
+            <div>
+                <label asp-for="Diagnostico" class="block text-sm font-medium text-slate-700 mb-1.5">Diagnóstico</label>
+                <input asp-for="Diagnostico" type="text"
+                       placeholder="Ej. F41.1 Trastorno de ansiedad generalizada..."
+                       class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                              focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+                              placeholder:text-slate-400" />
+                <span asp-validation-for="Diagnostico" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Nivel de progreso -->
+            <div>
+                <label asp-for="NivelProgreso" class="block text-sm font-medium text-slate-700 mb-1.5">
+                    Nivel de progreso <span class="text-red-500">*</span>
+                </label>
+                <select asp-for="NivelProgreso"
+                        class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                               focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                    <option value="">-- Seleccione --</option>
+                    <option value="Sin avance">Sin avance</option>
+                    <option value="Leve avance">Leve avance</option>
+                    <option value="Avance moderado">Avance moderado</option>
+                    <option value="Buen avance">Buen avance</option>
+                    <option value="Avance significativo">Avance significativo</option>
+                </select>
+                <span asp-validation-for="NivelProgreso" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Plan terapéutico -->
+            <div class="sm:col-span-2">
+                <label asp-for="PlanTerapeutico" class="block text-sm font-medium text-slate-700 mb-1.5">Plan terapéutico</label>
+                <textarea asp-for="PlanTerapeutico" rows="3"
+                          placeholder="Describe los objetivos y estrategias planificadas para las próximas sesiones..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="PlanTerapeutico" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Tareas asignadas -->
+            <div>
+                <label asp-for="TareasAsignadas" class="block text-sm font-medium text-slate-700 mb-1.5">Tareas asignadas</label>
+                <textarea asp-for="TareasAsignadas" rows="2"
+                          placeholder="Ej. diario emocional, ejercicios de respiración, lecturas..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="TareasAsignadas" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+            <!-- Próximo objetivo -->
+            <div>
+                <label asp-for="ProximoObjetivo" class="block text-sm font-medium text-slate-700 mb-1.5">Próximo objetivo</label>
+                <textarea asp-for="ProximoObjetivo" rows="2"
+                          placeholder="Ej. trabajar la regulación emocional en situaciones de conflicto..."
+                          class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
+                                 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none
+                                 placeholder:text-slate-400"></textarea>
+                <span asp-validation-for="ProximoObjetivo" class="text-xs text-red-500 mt-1 block"></span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3 pb-6">
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            @(esEdicion ? "Actualizar" : "Guardar")
+        </button>
+        <a asp-action="Index"
+           class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+            Cancelar
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Resalta visualmente el radio seleccionado
+        document.querySelectorAll('input[name="asistencia"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('input[name="asistencia"]').forEach(function (r) {
+                    const label = r.closest('label');
+                    label.classList.remove('bg-emerald-50', 'border-emerald-300', 'text-emerald-700',
+                                          'bg-red-50', 'border-red-300', 'text-red-700');
+                    label.classList.add('bg-white', 'border-slate-200', 'text-slate-600');
+                });
+                const selected = this.closest('label');
+                selected.classList.remove('bg-white', 'border-slate-200', 'text-slate-600');
+                if (this.value === 'Asistió') {
+                    selected.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-700');
+                } else {
+                    selected.classList.add('bg-red-50', 'border-red-300', 'text-red-700');
+                }
+            });
+        });
+    </script>
+}

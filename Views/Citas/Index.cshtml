@@ -1,0 +1,222 @@
+@using AppCitasPsicologia.Models.Citas
+@using AppCitasPsicologia.Models.Paginacion
+@model PaginacionRespuesta<Citas>
+@{
+    ViewData["Title"] = "Citas";
+    var nombreEmpresa = ViewBag.NombreEmpresa as string;
+}
+
+<!-- Page header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-800">Citas</h1>
+        <p class="text-sm text-slate-500 mt-0.5">@nombreEmpresa</p>
+    </div>
+    <a asp-action="Crear"
+       class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm self-start sm:self-auto">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Crear Nuevo
+    </a>
+</div>
+
+<!-- Card -->
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+
+    <!-- Toolbar -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+            <label for="cantidadRecordsPorPagina" class="text-sm text-slate-500 whitespace-nowrap">Mostrar</label>
+            <select asp-for="@Model.RecordsPorPagina" id="cantidadRecordsPorPagina"
+                    class="text-sm border border-slate-200 rounded-lg px-2 py-1.5 bg-white text-slate-700
+                           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent cursor-pointer">
+                <option>3</option>
+                <option>5</option>
+                <option>10</option>
+            </select>
+            <span class="text-sm text-slate-500">registros</span>
+        </div>
+        <span class="text-xs text-slate-400">
+            @Model.CantidadTotalRecords cita@(Model.CantidadTotalRecords == 1 ? "" : "s")
+        </span>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-slate-50 border-b border-slate-200">
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider w-14">#</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Paciente</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Psicólogo</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Fecha</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Horario</th>
+                    <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Asistencia</th>
+                    <th class="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach (var cita in Model.Elementos)
+                {
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">@cita.Id</td>
+                        <td class="px-5 py-3.5">
+                            <div class="font-medium text-slate-700">@cita.NombreCliente</div>
+                        </td>
+                        <td class="px-5 py-3.5 text-slate-600">@cita.NombrePsicologo</td>
+                        <td class="px-5 py-3.5 text-slate-600 whitespace-nowrap">
+                            @cita.FechaReserva.ToString("dd/MM/yyyy")
+                        </td>
+                        <td class="px-5 py-3.5 text-slate-600 whitespace-nowrap">
+                            @cita.HoraInicio.ToString(@"hh\:mm") – @cita.HoraFin.ToString(@"hh\:mm")
+                        </td>
+                        <td class="px-5 py-3.5">
+                            @if (string.IsNullOrEmpty(cita.Asistencia))
+                            {
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500">
+                                    Pendiente
+                                </span>
+                            }
+                            else if (cita.Asistencia == "Asistió")
+                            {
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                    Asistió
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                                    No Asistió
+                                </span>
+                            }
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center justify-end gap-2">
+                                <!-- Ver Cita -->
+                                <a asp-action="VerCita" asp-route-id="@cita.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-sky-600 bg-sky-50 hover:bg-sky-100 rounded-lg transition-colors border border-sky-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Ver Cita
+                                </a>
+                                <!-- Documentar -->
+                                <a asp-action="Documentar" asp-route-id="@cita.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-violet-600 bg-violet-50 hover:bg-violet-100 rounded-lg transition-colors border border-violet-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Documentar
+                                </a>
+                                <!-- Cancelar -->
+                                <a asp-action="CancelarCita" asp-route-id="@cita.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors border border-orange-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    </svg>
+                                    Cancelar
+                                </a>
+                                <!-- Postergar -->
+                                <a asp-action="PostergarCita" asp-route-id="@cita.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors border border-amber-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                    Postergar
+                                </a>
+                                <!-- Editar -->
+                                <a asp-action="Editar" asp-route-id="@cita.Id"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    Editar
+                                </a>
+                                <!-- Borrar -->
+                                <button type="button" onclick="abrirModalBorrar(@cita.Id, '@cita.NombreCliente')"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors border border-red-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Elementos.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="px-5 py-10 text-center text-slate-400 text-sm">
+                            No hay citas registradas.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-5 py-4 border-t border-slate-100">
+        <partial name="_Paginacion" />
+    </div>
+</div>
+
+<!-- Modal Borrar -->
+<div id="modalBorrar" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-sm mx-4 p-6">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-base font-semibold text-slate-800">Confirmar eliminación</h3>
+                <p class="text-sm text-slate-500 mt-0.5">
+                    ¿Estás seguro de borrar la cita de <span id="modalNombrePaciente" class="font-medium text-slate-700"></span>?
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center justify-end gap-3 mt-6">
+            <button type="button" onclick="cerrarModalBorrar()"
+                    class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">
+                Cancelar
+            </button>
+            <form id="formBorrar" asp-action="Borrar" method="post">
+                <input type="hidden" id="inputIdBorrar" name="id" />
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors">
+                    Borrar
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#cantidadRecordsPorPagina").change(function () {
+            const recordsPorPagina = $(this).val();
+            location.href = `/Citas/Index?pagina=1&recordsPorPagina=${recordsPorPagina}`;
+        });
+
+        function abrirModalBorrar(id, nombre) {
+            document.getElementById('inputIdBorrar').value = id;
+            document.getElementById('modalNombrePaciente').textContent = '"' + nombre + '"';
+            document.getElementById('modalBorrar').classList.remove('hidden');
+            document.getElementById('modalBorrar').classList.add('flex');
+        }
+
+        function cerrarModalBorrar() {
+            document.getElementById('modalBorrar').classList.add('hidden');
+            document.getElementById('modalBorrar').classList.remove('flex');
+        }
+
+        document.getElementById('modalBorrar').addEventListener('click', function (e) {
+            if (e.target === this) cerrarModalBorrar();
+        });
+    </script>
+}
