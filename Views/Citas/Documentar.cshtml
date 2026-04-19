@@ -51,16 +51,16 @@
                 </label>
                 <div class="flex items-center gap-3">
                     <label class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border cursor-pointer transition-colors
-                                  @(asistenciaActual == "Asistió" ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
+                                  @(asistenciaActual == "Si" ? "bg-emerald-50 border-emerald-300 text-emerald-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
                         <input type="radio" name="asistencia" value="Asistió"
-                               @(asistenciaActual == "Asistió" ? "checked" : "")
+                               @(asistenciaActual == "Si" ? "checked" : "")
                                class="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500" />
                         <span class="text-sm font-medium">Asistió</span>
                     </label>
                     <label class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border cursor-pointer transition-colors
-                                  @(asistenciaActual == "No Asistió" ? "bg-red-50 border-red-300 text-red-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
+                                  @(asistenciaActual == "No" ? "bg-red-50 border-red-300 text-red-700" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50")">
                         <input type="radio" name="asistencia" value="No Asistió"
-                               @(asistenciaActual == "No Asistió" ? "checked" : "")
+                               @(asistenciaActual == "No" ? "checked" : "")
                                class="w-4 h-4 text-red-500 border-slate-300 focus:ring-red-400" />
                         <span class="text-sm font-medium">No Asistió</span>
                     </label>
@@ -95,14 +95,11 @@
                         class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
                     <option value="">-- Seleccione --</option>
-                    <option value="Estable">Estable</option>
-                    <option value="Ansioso">Ansioso</option>
-                    <option value="Deprimido">Deprimido</option>
-                    <option value="Irritable">Irritable</option>
-                    <option value="Eufórico">Eufórico</option>
-                    <option value="Triste">Triste</option>
-                    <option value="Angustiado">Angustiado</option>
-                    <option value="Confundido">Confundido</option>
+                    <option value="Muy Mal">Muy Mal</option>
+                    <option value="Mal">Mal</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Bien">Bien</option>
+                    <option value="Muy Bien">Muy Bien</option>
                 </select>
                 <span asp-validation-for="EstadoEmocional" class="text-xs text-red-500 mt-1 block"></span>
             </div>
@@ -232,11 +229,10 @@
                         class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 text-slate-700
                                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
                     <option value="">-- Seleccione --</option>
-                    <option value="Sin avance">Sin avance</option>
-                    <option value="Leve avance">Leve avance</option>
-                    <option value="Avance moderado">Avance moderado</option>
-                    <option value="Buen avance">Buen avance</option>
-                    <option value="Avance significativo">Avance significativo</option>
+                    <option value="Retroceso">Retroceso</option>
+                    <option value="Estable">Estable</option>
+                    <option value="Mejora leve">Mejora leve</option>
+                    <option value="Mejora notable">Mejora notable</option>
                 </select>
                 <span asp-validation-for="NivelProgreso" class="text-xs text-red-500 mt-1 block"></span>
             </div>
